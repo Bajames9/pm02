@@ -107,10 +107,35 @@ def validate_numeric_fields(df: DataFrame) -> DataFrame:
         Preserve all previously recorded violations.
         Do not remove records.
     """
-    # TODO: Evaluate numeric validation rules.
-    # TODO: Append violations to rejection_reason.
-    raise NotImplementedError(
-        "Implement validate_numeric_fields"
+    invalid_quantity = (
+        F.col("quantity").isNull()
+        | (F.col("quantity") <= 0)
+    )
+
+    invalid_unit_price = (
+        F.col("unit_price").isNull()
+        | (F.col("unit_price") < 0)
+    )
+
+    invalid_discount = (
+        F.col("discount").isNull()
+        | (F.col("discount") < 0)
+        | (F.col("discount") > 1)
+    )
+    numeric_reasons = F.concat_ws(
+        "; ",
+        F.when(invalid_quantity, F.lit("quantity_invalid")),
+        F.when(invalid_unit_price, F.lit("unit_price_invalid")),
+        F.when(invalid_discount, F.lit("discount_invalid"))
+    )
+
+    return df.withColumn(
+        "rejection_reason",
+        F.concat_ws(
+            "; ",
+            F.col("rejection_reason"),
+            F.when(numeric_reasons != "", numeric_reasons)
+        )
     )
 
 
