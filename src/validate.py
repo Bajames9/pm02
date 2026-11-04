@@ -57,11 +57,31 @@ def validate_required_fields(df: DataFrame) -> DataFrame:
         Do not discard existing column values.
         Use the rejection reason codes from the specification.
     """
-    # TODO: Create the rejection_reason column.
-    # TODO: Evaluate all required-field rules.
-    # TODO: Record applicable rejection reasons.
-    raise NotImplementedError(
-        "Implement validate_required_fields"
+    required_field_rules = [
+        ("customer_id_required", F.col("customer_id").isNull()),
+        ("order_id_required", F.col("order_id").isNull()),
+        ("product_id_required", F.col("product_id").isNull()),
+        ("order_date_required", F.col("order_date").isNull()),
+        ("return_flag_required", F.col("return_flag").isNull()),
+        (
+            "return_reason_required",
+            (F.col("return_flag") == True) & F.col("return_reason").isNull(),
+        ),
+        (
+            "self_service_success_required",
+            (F.col("self_service_attempted") == True)
+            & F.col("self_service_success").isNull(),
+        ),
+    ]
+
+    reason = F.concat_ws(
+        "; ",
+        *[F.when(condition, F.lit(code)) for code, condition in required_field_rules],
+    )
+
+    return df.withColumn(
+        "rejection_reason",
+        F.when(reason == "", F.lit(None).cast("string")).otherwise(reason),
     )
 
 
