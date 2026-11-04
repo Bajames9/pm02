@@ -114,9 +114,24 @@ def add_delivery_measures(df: DataFrame) -> DataFrame:
         project specification.
         Do not filter or validate records.
     """
-    # TODO: Calculate delivery_delay_days.
-    # TODO: Calculate supplier_receipt_delay_days.
-    raise NotImplementedError("Implement add_delivery_measures")
+    df = df.withColumn(
+        "delivery_delay_days",
+        F.datediff(
+            F.col("delivery_date"),
+            F.col("promised_delivery_date")
+        )
+    )
+
+    df = df.withColumn(
+        "supplier_receipt_delay_days",
+        F.datediff(
+            F.col("actual_receipt_date"),
+            F.col("promised_receipt_date")
+        )
+    )
+
+    return df
+
 
 
 def transform_canopy_data(valid_df: DataFrame) -> DataFrame:
