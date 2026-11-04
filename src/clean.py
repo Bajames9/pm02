@@ -48,9 +48,20 @@ def trim_string_columns(df: DataFrame) -> DataFrame:
         Preserve null values and non-string columns.
         Do not remove records or change column data types.
     """
-    # TODO: Trim all string columns.
-    # TODO: Preserve non-string columns and null values.
-    raise NotImplementedError("Implement trim_string_columns")
+
+    string_cols = {
+        field.name
+        for field in df.schema.fields
+        if isinstance(field.dataType, StringType)
+    }
+
+
+    return df.select(
+        *[
+            F.trim(F.col(c)).alias(c) if c in string_cols else F.col(c)
+            for c in df.columns
+        ]
+    )
 
 
 def convert_blank_strings_to_null(df: DataFrame) -> DataFrame:
