@@ -63,15 +63,6 @@ def validate_required_fields(df: DataFrame) -> DataFrame:
         ("product_id_required", F.col("product_id").isNull()),
         ("order_date_required", F.col("order_date").isNull()),
         ("return_flag_required", F.col("return_flag").isNull()),
-        (
-            "return_reason_required",
-            (F.col("return_flag") == True) & F.col("return_reason").isNull(),
-        ),
-        (
-            "self_service_success_required",
-            (F.col("self_service_attempted") == True)
-            & F.col("self_service_success").isNull(),
-        ),
     ]
 
     reason = F.concat_ws(
@@ -168,13 +159,42 @@ def validate_business_rules(df: DataFrame) -> DataFrame:
         self_service_success is required only when
         self_service_attempted is true.
     """
-    # TODO: Evaluate date validation rules.
-    # TODO: Evaluate return-related validation rules.
-    # TODO: Evaluate self-service validation rules.
-    # TODO: Append violations to rejection_reason.
-    raise NotImplementedError(
-        "Implement validate_business_rules"
+
+    business_rules = [
+        (
+            "delivery_before_order",
+            F.col("delivery_date").isNotNull()
+            & F.col("order_date").isNotNull()
+            & (F.col("delivery_date") < F.col("order_date")),
+        ),
+        (
+            "customer_join_after_order",
+            F.col("customer_join_date").isNotNull()
+            & F.col("order_date").isNotNull()
+            & (F.col("customer_join_date") > F.to_date(F.col("order_date"))),
+        ),
+        (
+            "return_reason_required",
+            (F.col("return_flag") == True) & F.col("return_reason").isNull(),
+        ),
+        (
+            "self_service_success_required",
+            (F.col("self_service_attempted") == True)
+            & F.col("self_service_success").isNull(),
+        ),
+    ]
+
+    combined = F.concat_ws(
+        "; ",
+        F.col("rejection_reason"),
+        *[F.when(condition, F.lit(code)) for code, condition in business_rules],
     )
+
+    return df.withColumn(
+        "rejection_reason",
+        F.when(combined == "", F.lit(None).cast("string")).otherwise(combined),
+    )
+
 
 
 def validate_canopy_data(
