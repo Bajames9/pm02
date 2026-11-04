@@ -38,34 +38,33 @@ def create_canopy_schema() -> StructType:
             nullability.
     """
 
-    def create_canopy_schema():
-        return StructType([
-            StructField("customer_id", StringType(), False),
-            StructField("order_id", StringType(), False),
-            StructField("order_date", TimestampType(), False),
-            StructField("product_id", StringType(), False),
-            StructField("product_category", StringType(), False),
-            StructField("quantity", IntegerType(), False),
-            StructField("unit_price", DoubleType(), False),
-            StructField("discount", DoubleType(), False),
-            StructField("order_status", StringType(), False),
-            StructField("payment_method", StringType(), False),
-            StructField("shipping_method", StringType(), False),
-            StructField("promised_delivery_date", TimestampType(), False),
-            StructField("delivery_date", TimestampType(), True),
-            StructField("return_flag", BooleanType(), False),
-            StructField("return_reason", StringType(), True),
-            StructField("customer_join_date", DateType(), False),
-            StructField("acquisition_source", StringType(), False),
-            StructField("supplier_id", StringType(), False),
-            StructField("support_channel", StringType(), True),
-            StructField("support_category", StringType(), True),
-            StructField("self_service_attempted", BooleanType(), False),
-            StructField("self_service_success", BooleanType(), True),
-            StructField("customer_satisfaction", DoubleType(), True),
-            StructField("promised_receipt_date", TimestampType(), False),
-            StructField("actual_receipt_date", TimestampType(), False),
-        ])
+    return StructType([
+        StructField("customer_id", StringType(), False),
+        StructField("order_id", StringType(), False),
+        StructField("order_date", TimestampType(), False),
+        StructField("product_id", StringType(), False),
+        StructField("product_category", StringType(), False),
+        StructField("quantity", IntegerType(), False),
+        StructField("unit_price", DoubleType(), False),
+        StructField("discount", DoubleType(), False),
+        StructField("order_status", StringType(), False),
+        StructField("payment_method", StringType(), False),
+        StructField("shipping_method", StringType(), False),
+        StructField("promised_delivery_date", TimestampType(), False),
+        StructField("delivery_date", TimestampType(), True),
+        StructField("return_flag", BooleanType(), False),
+        StructField("return_reason", StringType(), True),
+        StructField("customer_join_date", DateType(), False),
+        StructField("acquisition_source", StringType(), False),
+        StructField("supplier_id", StringType(), False),
+        StructField("support_channel", StringType(), True),
+        StructField("support_category", StringType(), True),
+        StructField("self_service_attempted", BooleanType(), False),
+        StructField("self_service_success", BooleanType(), True),
+        StructField("customer_satisfaction", DoubleType(), True),
+        StructField("promised_receipt_date", TimestampType(), False),
+        StructField("actual_receipt_date", TimestampType(), False),
+    ])
 
 
 def ingest_canopy_data(
