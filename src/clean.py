@@ -123,8 +123,7 @@ def remove_exact_duplicates(df: DataFrame) -> DataFrame:
         customer_id. Preserve records that share an
         identifier but differ in other column values.
     """
-    # TODO: Remove exact duplicates across all 25 columns.
-    raise NotImplementedError("Implement remove_exact_duplicates")
+    return df.distinct()
 
 
 def clean_canopy_data(ingested_df: DataFrame) -> DataFrame:
