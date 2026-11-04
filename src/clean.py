@@ -84,11 +84,21 @@ def convert_blank_strings_to_null(df: DataFrame) -> DataFrame:
         Preserve existing null values, non-string columns,
         and all records. Do not perform validation.
     """
-    # TODO: Convert empty strings to null in string columns.
-    # TODO: Preserve existing null values and other columns.
-    raise NotImplementedError(
-        "Implement convert_blank_strings_to_null"
+    string_cols = {
+        field.name
+        for field in df.schema.fields
+        if isinstance(field.dataType, StringType)
+    }
+
+    return df.select(
+        *[
+            F.when(F.col(c) == "", F.lit(None)).otherwise(F.col(c)).alias(c)
+            if c in string_cols
+            else F.col(c)
+            for c in df.columns
+        ]
     )
+
 
 
 def remove_exact_duplicates(df: DataFrame) -> DataFrame:
