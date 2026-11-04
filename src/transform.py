@@ -69,10 +69,22 @@ def add_financial_measures(df: DataFrame) -> DataFrame:
         Do not change existing source columns.
         Do not perform validation or remove records.
     """
-    # TODO: Calculate gross_amount.
-    # TODO: Calculate discount_amount using gross_amount.
-    # TODO: Calculate net_amount using the financial measures.
-    raise NotImplementedError("Implement add_financial_measures")
+    df = df.withColumn(
+        "gross_amount",
+        f.round(F.col("quantity") * F.col("unit_price"))
+    )
+
+    df = df.withColumn(
+        "discount_amount",
+        f.round(F.col("gross_amount") * F.col("discount"))
+    )
+
+    df = df.withColumn(
+        "net_amount",
+        f.round(F.col("gross_amount") - F.col("discount_amount"))
+    )
+
+    return df
 
 
 def add_delivery_measures(df: DataFrame) -> DataFrame:
