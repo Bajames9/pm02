@@ -105,5 +105,14 @@ def ingest_canopy_data(
     # TODO: Obtain the explicit Canopy schema.
     # TODO: Read the CSV using spark and the schema.
     # TODO: Return the ingested DataFrame.
+    schema = create_canopy_schema()
+    ingested_df = (
+            spark.read
+            .format("csv")
+            .option("header", True)
+            .option("mode", "FAILFAST")
+            .schema(schema)
+            .load(input_path))
+    return ingested_df
     raise NotImplementedError("Implement ingest_canopy_data")
 
