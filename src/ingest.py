@@ -102,9 +102,7 @@ def ingest_canopy_data(
         or write the data. Those responsibilities belong
         to subsequent pipeline stages.
     """
-    # TODO: Obtain the explicit Canopy schema.
-    # TODO: Read the CSV using spark and the schema.
-    # TODO: Return the ingested DataFrame.
+    
     schema = create_canopy_schema()
     ingested_df = (
             spark.read
