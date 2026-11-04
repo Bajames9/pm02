@@ -71,17 +71,17 @@ def add_financial_measures(df: DataFrame) -> DataFrame:
     """
     df = df.withColumn(
         "gross_amount",
-        f.round(F.col("quantity") * F.col("unit_price"))
+        f.round(F.col("quantity") * F.col("unit_price"),2)
     )
 
     df = df.withColumn(
         "discount_amount",
-        f.round(F.col("gross_amount") * F.col("discount"))
+        f.round(F.col("gross_amount") * F.col("discount"),2)
     )
 
     df = df.withColumn(
         "net_amount",
-        f.round(F.col("gross_amount") - F.col("discount_amount"))
+        f.round(F.col("gross_amount") - F.col("discount_amount"),2)
     )
 
     return df
